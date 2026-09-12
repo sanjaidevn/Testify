@@ -35,7 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(API_ENDPOINT);
             
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                const text = await response.text();
+                console.error('Server error response:', text);
+                throw new Error(`Server returned ${response.status}: ${text}`);
             }
             
             const data = await response.json();
@@ -74,7 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                const text = await response.text();
+                console.error('Server save error:', text);
+                throw new Error(`Server returned ${response.status}: ${text}`);
             }
             
             setStatus('connected', 'Saved');

@@ -9,7 +9,12 @@ exports.handler = async (event, context) => {
         // Handle GET request - Fetch all texts
         if (event.httpMethod === 'GET') {
             // Retrieve the stored data (or an empty array if nothing is saved yet)
-            const data = await store.get('all_boxes', { type: 'json' }) || [];
+            let data = [];
+            try {
+                data = await store.get('all_boxes', { type: 'json' }) || [];
+            } catch (e) {
+                console.warn('Could not parse blob as JSON, defaulting to empty array', e);
+            }
             
             return {
                 statusCode: 200,
@@ -34,7 +39,12 @@ exports.handler = async (event, context) => {
             }
 
             // Fetch existing data
-            let data = await store.get('all_boxes', { type: 'json' }) || [];
+            let data = [];
+            try {
+                data = await store.get('all_boxes', { type: 'json' }) || [];
+            } catch (e) {
+                console.warn('Could not parse blob as JSON during PUT, defaulting to empty array', e);
+            }
             
             // Update the specific box in the array
             const existingIndex = data.findIndex(item => item.id === id);
@@ -76,7 +86,11 @@ exports.handler = async (event, context) => {
         console.error('Netlify Blob Error:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: error.message || 'Internal Server Error' })
+            body: JSON.stringify({ 
+                error: error.message || 'Internal Server Error',
+                stack: error.stack,
+                name: error.name
+            })
         };
     }
 };
