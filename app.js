@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     
     const statusIndicator = document.getElementById('status');
-    const API_ENDPOINT = '/.netlify/functions/api';
+    const API_ENDPOINT = '/api';
     
     // Store timeouts for debounce
     const typingTimers = {};
